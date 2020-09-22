@@ -2,6 +2,7 @@
 #
 #All environment specific variables are defined here at the top, edit them as necessary to fit your environment
 #
+#
 #Filepath for prepared csv file
 $csvFile = "c:\data\acctRequests\script-test.csv"
 #exchange target database name
