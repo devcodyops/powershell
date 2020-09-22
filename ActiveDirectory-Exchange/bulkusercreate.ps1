@@ -1,6 +1,8 @@
 ﻿#-----Declare Variables-----#
 #
-#filepath for prepared csv file
+#All environment specific variables are defined here at the top, edit them as necessary to fit your environment
+#
+#Filepath for prepared csv file
 $csvFile = "c:\data\acctRequests\script-test.csv"
 #exchange target database name
 $exDB = "desired exchange database to create mailboxes in"
@@ -51,10 +53,10 @@ Remove-PSDrive -name dcpsdrive
 Import-module ActiveDirectory
 #
 #----Invoke remote powershell commands on dc to modify users-----#
-#-------configure computername flag to same domain controller you copied your csv file to
+#-------configure computername flag to same domain controller you copied your csv file to using domainDC variable defined at script start
 Invoke-Command -ComputerName $domainDC -Credential $usercreds -ArgumentList ($csvFile, $domainDC, $vdiSecGroup) -ScriptBlock {
     param($csvFile, $domainDC, $vdiSecGroup)
-    #--------Configure server flag to your needed domain controller
+    #--------Configure server flag to your needed domain controller using declared domainDc variable at top of script
     Import-CSV $csvFile | ForEach {Set-ADUser -Server "$domainDC" -Identity $_.alias -Office $_.office -Description $_.office -ChangePasswordAtLogon $true; Add-ADGroupMember -Identity $vdiSecGroup -Members $_.alias}
     Import-CSV $csvFile | ForEach {Get-ADUser -Server "$domainDC" -Identity $_.alias -Properties * | select SamAccountName, Office, Description, PasswordExpired, MemberOf}
 }
